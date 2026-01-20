@@ -13,19 +13,19 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  // Kita mencoba memuat font Inter (Opsional, jika gagal akan pakai default sans)
-  // Untuk production yang lebih stabil, Anda bisa men-download font .ttf ke folder assets
-  // Tapi fetch ini biasanya cukup aman untuk Vercel.
+  // FIX: Menggunakan URL CDN yang stabil untuk font Inter SemiBold (TTF)
+  // Kita fetch langsung string URL-nya, tanpa membungkus dengan new URL(..., import.meta.url)
   const fontSemiBold = await fetch(
-    new URL(
-      'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hjp-Ek-_EeA.ttf',
-      import.meta.url,
-    ),
-  ).then((res) => res.arrayBuffer());
+    'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-600-normal.ttf',
+  ).then((res) => {
+    if (!res.ok) {
+      throw new Error('Gagal memuat font');
+    }
+    return res.arrayBuffer();
+  });
 
   return new ImageResponse(
     // ImageResponse Element (JSX)
-    // Note: CSS disini terbatas pada Flexbox dasar (Satori engine)
     <div
       style={{
         height: '100%',
@@ -34,12 +34,13 @@ export default async function Image() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#0d9488', // Teal-600 (Primary Color)
-        backgroundImage: 'linear-gradient(to bottom right, #0f766e, #0d9488)', // Gradient Teal
+        backgroundColor: '#0d9488', // Teal-600
+        backgroundImage: 'linear-gradient(to bottom right, #0f766e, #0d9488)',
         color: 'white',
+        // Gunakan font yang diload
         fontFamily: '"Inter", sans-serif',
       }}>
-      {/* Decorative Background Pattern (Circles) */}
+      {/* Decorative Background Pattern */}
       <div
         style={{
           position: 'absolute',
@@ -70,25 +71,25 @@ export default async function Image() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '20px',
           zIndex: 10,
         }}>
-        {/* Logo / Icon Simulation */}
+        {/* Logo Box */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '80px',
-            height: '80px',
+            width: '100px',
+            height: '100px',
             backgroundColor: 'white',
-            borderRadius: '20px',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+            borderRadius: '24px',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+            marginBottom: '30px',
           }}>
-          {/* Simple SVG Cap Icon */}
+          {/* SVG Icon (Graduation Cap) */}
           <svg
-            width='48'
-            height='48'
+            width='60'
+            height='60'
             viewBox='0 0 24 24'
             fill='none'
             stroke='#0d9488'
@@ -103,10 +104,10 @@ export default async function Image() {
         {/* Brand Name */}
         <div
           style={{
-            fontSize: 64,
-            fontWeight: 700,
-            letterSpacing: '-0.02em',
-            marginTop: 20,
+            fontSize: 72,
+            fontWeight: 600,
+            letterSpacing: '-0.03em',
+            marginBottom: 20,
           }}>
           TugasTuntas
         </div>
@@ -115,25 +116,25 @@ export default async function Image() {
         <div
           style={{
             fontSize: 32,
-            fontWeight: 500,
+            fontWeight: 400,
             opacity: 0.9,
             textAlign: 'center',
-            padding: '0 40px',
+            maxWidth: '900px',
           }}>
-          Jasa Pembuatan Skripsi & Tesis Profesional
+          Jasa Skripsi & Tesis Profesional
         </div>
 
-        {/* Badge / Footer */}
+        {/* Badge */}
         <div
           style={{
             marginTop: 40,
-            padding: '10px 30px',
+            padding: '12px 40px',
             backgroundColor: 'rgba(255,255,255,0.2)',
             borderRadius: '50px',
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: 600,
           }}>
-          Lulus Cepat • Bebas Plagiasi • Terpercaya
+          Lulus Cepat • Bebas Plagiasi
         </div>
       </div>
     </div>,
