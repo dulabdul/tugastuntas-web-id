@@ -1,28 +1,55 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google'; // Font modern
+import { Inter } from 'next/font/google';
 import { SITE_CONFIG } from '@/data/content';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
+// KONFIGURASI METADATA & OPENGRAPH
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_CONFIG.domain),
+  // 1. Metadata Base: Sangat PENTING untuk resolve relative path OG Image
+  metadataBase: new URL(SITE_CONFIG.domain), // Pastikan domain di content.ts = 'https://tugastuntas.web.id'
+
+  // 2. Title & Desc Dasar
   title: {
-    default: `${SITE_CONFIG.name} - Jasa Skripsi & Tesis Terpercaya`,
-    template: `%s | ${SITE_CONFIG.name}`,
+    default: 'TugasTuntas - Jasa Skripsi & Tesis Profesional',
+    template: '%s | TugasTuntas', // Nanti halaman lain jadi: "Tentang Kami | TugasTuntas"
   },
-  description: SITE_CONFIG.description,
+  description:
+    'Solusi cepat lulus kuliah. Jasa bimbingan dan pembuatan Skripsi, Tesis, dan Olah Data terpercaya. Garansi bimbingan sampai wisuda.',
+
+  // 3. OpenGraph (Facebook, LinkedIn, WhatsApp)
   openGraph: {
-    title: `${SITE_CONFIG.name} - Solusi Lulus Cepat`,
-    description: SITE_CONFIG.description,
+    title: 'TugasTuntas - Jasa Skripsi & Tesis Profesional',
+    description:
+      'Solusi cepat lulus kuliah. Garansi bimbingan sampai wisuda. Konsultasi sekarang!',
     url: SITE_CONFIG.domain,
-    siteName: SITE_CONFIG.name,
+    siteName: 'TugasTuntas',
     locale: 'id_ID',
     type: 'website',
+    // Next.js otomatis mendeteksi file opengraph-image.tsx, tapi kita bisa define manual juga
+    images: [
+      {
+        url: '/opengraph-image', // Route otomatis ke file .tsx tadi
+        width: 1200,
+        height: 630,
+        alt: 'TugasTuntas Preview',
+      },
+    ],
   },
-  robots: {
-    index: true,
-    follow: true,
+
+  // 4. Twitter Card
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TugasTuntas - Jasa Skripsi & Tesis Profesional',
+    description:
+      'Bimbingan skripsi dan tesis sampai lulus. Anti plagiasi dan privasi aman.',
+    // images: ['/opengraph-image'], // Otomatis inherit dari OG biasanya
+  },
+
+  // 5. Icons
+  icons: {
+    icon: '/favicon.ico',
   },
 };
 
@@ -31,32 +58,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
-    name: SITE_CONFIG.name,
-    image: `${SITE_CONFIG.domain}/images/logo.png`,
-    description: SITE_CONFIG.description,
-    url: SITE_CONFIG.domain,
-    telephone: SITE_CONFIG.whatsapp,
-    address: {
-      '@type': 'PostalAddress',
-      addressCountry: 'ID',
-    },
-    priceRange: '$$',
-  };
-
   return (
     <html
       lang='id'
       className='scroll-smooth'>
-      <head>
-        <script
-          type='application/ld+json'
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
-      <body className={inter.className}>{children}</body>
+      {/* Tambahkan Structured Data (JSON-LD) Disini jika perlu, atau di page.tsx */}
+      <body
+        className={`${inter.className} bg-slate-50 text-slate-900 antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }
